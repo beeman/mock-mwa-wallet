@@ -10,6 +10,8 @@
 
     <!-- Authorize dapp fragment strings -->
     <string name="label_authorize_dapp">Authorize dapp</string>
+    <string name="label_public_address_not_configured">Public address not configured</string>
+    <string name="label_share_public_address">You\'ll share this public address with this app:\n%1$s</string>
     <string name="label_verification_state">Status:</string>
     <string name="label_verification_scope">Scope:</string>
     <string name="label_simulate_cluster_not_supported">Simulate cluster not supported</string>

@@ -16,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.solana.mwallet.LocalKeypair
 import com.solana.mwallet.MobileWalletAdapterViewModel
 import com.solana.mwallet.MobileWalletAdapterViewModel.MobileWalletAdapterServiceRequest
 import com.solana.mwallet.R
@@ -39,6 +40,8 @@ class AuthorizeDappFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewBinding.textInfo.text = getPublicAddressText()
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -91,6 +94,11 @@ class AuthorizeDappFragment : Fragment() {
             }
         }
     }
+
+    private fun getPublicAddressText(): String =
+        runCatching { LocalKeypair.getPublicKey() }.getOrNull()
+            ?.let { getString(R.string.label_share_public_address, it) }
+            ?: getString(R.string.label_public_address_not_configured)
 
     companion object {
         private val TAG = AuthorizeDappFragment::class.simpleName
