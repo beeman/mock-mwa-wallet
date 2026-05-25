@@ -25,15 +25,9 @@ class MainActivity : AppCompatActivity() {
 
         viewBinding.publicKeyText.text = getPublicKeyText()
 
-        viewBinding.button.setOnClickListener {
-            UserAuthenticationUseCase.authenticate(this) { result , error ->
-                Toast.makeText(applicationContext,
-                    result?.let { "Authentication succeeded!" }
-                        ?: error?.let { "Authentication error: $it" }
-                        ?: "Authentication failed", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
+        viewBinding.button.setOnClickListener { onAuthenticationButtonClicked() }
+
+        updateAuthenticationButton()
 
         intent.data?.let { uri ->
             runCatching {
@@ -41,6 +35,28 @@ class MainActivity : AppCompatActivity() {
                 startActivity(
                     Intent(applicationContext, MobileWalletAdapterActivity::class.java)
                         .setData(remoteAssociationUri.uri))
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateAuthenticationButton()
+    }
+
+    private fun onAuthenticationButtonClicked() {
+        if (UserAuthenticationUseCase.isAuthenticated(this)) {
+            UserAuthenticationUseCase.unauthenticate(this)
+            Toast.makeText(applicationContext, "Unauthenticated", Toast.LENGTH_SHORT).show()
+            updateAuthenticationButton()
+        } else {
+            UserAuthenticationUseCase.authenticate(this) { result , error ->
+                Toast.makeText(applicationContext,
+                    result?.let { "Authentication succeeded!" }
+                        ?: error?.let { "Authentication error: $it" }
+                        ?: "Authentication failed", Toast.LENGTH_SHORT)
+                    .show()
+                updateAuthenticationButton()
             }
         }
     }
@@ -69,4 +85,14 @@ class MainActivity : AppCompatActivity() {
         runCatching { LocalKeypair.getPublicKey() }.getOrNull()
             ?.let { "Public key: $it" }
             ?: "Public key not configured"
+
+    private fun updateAuthenticationButton() {
+        viewBinding.button.setText(
+            if (UserAuthenticationUseCase.isAuthenticated(this)) {
+                R.string.label_unauthenticate
+            } else {
+                R.string.label_authenticate
+            }
+        )
+    }
 }

@@ -6,7 +6,9 @@
     <string name="app_name">Mock MWA Wallet</string>
 
     <!-- Main activity strings -->
+    <string name="label_authenticate">Authenticate</string>
     <string name="label_hello_world">I\'m a wallet!</string>
+    <string name="label_unauthenticate">Unauthenticate</string>
 
     <!-- Authorize dapp fragment strings -->
     <string name="label_authorize_dapp">Authorize dapp</string>
